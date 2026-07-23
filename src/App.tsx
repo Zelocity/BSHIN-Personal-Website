@@ -11,7 +11,7 @@ function App() {
   return (
     <div className="min-h-screen bg-taupe-900 text-white">
       <Header />
-      {/* <SideNavigation /> */}
+      <SideNavigation />
 
       <main className="pt-16">
         <Hero />
