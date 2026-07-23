@@ -1,6 +1,7 @@
 import Header from "./components/layout/header";
 import Sidebar from "./components/layout/sidebar";
 import SideNavigation from "./components/layout/sidenavigation";
+import Background from "./components/layout/background";
 
 import Hero from "./components/sections/hero";
 import About from "./components/sections/about";
@@ -9,15 +10,17 @@ import Contact from "./components/sections/contact";
 
 function App() {
   return (
-    <div className="min-h-screen bg-taupe-900 text-white">
+    <div className="min-h-screen text-white">
+      <Background />
+
       <Header />
       <SideNavigation />
 
       <main className="pt-16">
-        <Hero />
+        {/* <Hero /> */}
         <About />
-        <Projects />
-        <Contact />
+        {/* <Projects />
+        <Contact /> */}
       </main>
     </div>
   );
