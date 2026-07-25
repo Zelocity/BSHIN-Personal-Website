@@ -335,7 +335,7 @@ function Background({
         pointer-events-none
         fixed inset-0 z-0
         overflow-hidden
-        bg-[#0b0b0f]
+        bg-parchment
         ${className}
       `}
     >

@@ -1,4 +1,35 @@
 @import "tailwindcss";
+@import "tailwindcss";
+
+@theme {
+  --color-parchment: #261d16;
+  --color-card: #8c6c54;
+  --color-card-dark: #b99563;
+
+  --color-ink: #432a22;
+  --color-ink-muted: #725344;
+
+  --color-rust: #a7472d;
+  --color-rust-light: #d26b43;
+
+  --color-line: #8f684e;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-parchment);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-parchment);
+  color: var(--color-ink);
+}
+
+::selection {
+  background-color: var(--color-rust);
+  color: var(--color-parchment);
+}
 
 html {
   scroll-behavior: smooth;

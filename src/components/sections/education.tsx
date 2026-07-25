@@ -56,7 +56,7 @@ function Education() {
   return (
     <section id="education" className="scroll-mt-16 px-6 py-3">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
-        <div className="col-span-12 rounded-2xl bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
+        <div className="col-span-12 rounded-2xl bg-card p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
           <header>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-400">
               Education

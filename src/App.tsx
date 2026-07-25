@@ -12,17 +12,17 @@ import Experience from "./components/sections/experience";
 
 function App() {
   return (
-    <div className="min-h-screen text-white">
+    <div className="relative isolate min-h-screen bg-parchment text-ink">
       <Background
-        dotSize={2}
-        gap={25}
-        baseColor="#395254"
-        glowColor="#96e3e2"
-        proximity={80}
-        glowIntensity={0.1}
-        waveSpeed={10}
-        driftAmount={2}
-        driftSpeed={3}
+        dotSize={1.5}
+        gap={30}
+        baseColor="#8f684e"
+        glowColor="#a7472d"
+        proximity={130}
+        glowIntensity={0.45}
+        waveSpeed={0.25}
+        driftAmount={2.5}
+        driftSpeed={0.5}
       />
 
       <div className="relative z-10">

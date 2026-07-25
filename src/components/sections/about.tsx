@@ -2,7 +2,7 @@ function About() {
   return (
     <section id="about" className="scroll-mt-16 px-6 py-20">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
-        <div className="col-span-12 rounded-2xl bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
+        <div className="col-span-12 rounded-2xl bg-card/90 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
           <div className="grid items-start gap-8 md:grid-cols-[180px_minmax(0,1fr)]">
             {/* Profile image */}
             <img
