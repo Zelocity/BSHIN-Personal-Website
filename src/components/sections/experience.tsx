@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 const experiences = [
   {
     company: "Tatum Games",
@@ -12,6 +14,20 @@ const experiences = [
       "Created technical documentation for MIKROS Bots and MIKROS MCP.",
     ],
     technologies: ["PHP", "CodeIgniter", "Git", "MySQL", "JavaScript"],
+
+    photos: [
+      "/images/experience/tatum-1.png",
+      "/images/experience/tatum-2.png",
+    ],
+
+    video: "",
+
+    links: [
+      {
+        label: "Visit Tatum Games",
+        url: "https://tatumgames.com",
+      },
+    ],
   },
   {
     company: "UC Riverside XCITE Center",
@@ -26,6 +42,21 @@ const experiences = [
       "Supported Unity and programming workshops for student summer camps.",
     ],
     technologies: ["Unity", "C#", "AR", "VR", "iOS"],
+
+    photos: [
+      "/images/experience/xcite-1.png",
+      "/images/experience/xcite-2.png",
+      "/images/experience/xcite-3.png",
+    ],
+
+    video: "/videos/xcite-demo.mp4",
+
+    links: [
+      {
+        label: "View project",
+        url: "https://example.com",
+      },
+    ],
   },
   {
     company: "Black Rocket Productions",
@@ -40,10 +71,18 @@ const experiences = [
       "Maintained an approachable and collaborative learning environment.",
     ],
     technologies: ["Teaching", "Game Development", "Programming"],
+
+    photos: ["/images/experience/black-rocket-1.png"],
+
+    video: "",
+
+    links: [],
   },
 ];
 
 function Experience() {
+  const [expandedJob, setExpandedJob] = useState<number | null>(null);
+
   return (
     <section
       id="experience"
@@ -80,6 +119,7 @@ function Experience() {
             />
 
             {experiences.map((experience, index) => {
+              const isExpanded = expandedJob === index;
               const isLast = index === experiences.length - 1;
 
               return (
@@ -128,61 +168,185 @@ function Experience() {
                   {/* Experience card */}
                   <div
                     className="
-                    rounded-2xl border border-zinc-800
-                    bg-zinc-900/60 p-6
-                    transition duration-300
-                    hover:border-violet-500/50
-                    md:-mx-8 md:p-8
+    rounded-2xl border border-zinc-800
+    bg-zinc-900/60
+    transition duration-300
+    hover:border-violet-500/50
+    md:-mx-8
   "
                   >
-                    {/* Mobile date */}
-                    <div className="mb-4 md:hidden">
-                      <p className="text-sm font-semibold text-zinc-300">
-                        {experience.date}
-                      </p>
+                    {/* Clickable main card */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setExpandedJob((current) =>
+                          current === index ? null : index,
+                        )
+                      }
+                      aria-expanded={isExpanded}
+                      aria-controls={`experience-details-${index}`}
+                      className="
+      w-full cursor-pointer p-6 text-left
+      focus:outline-none focus-visible:ring-2
+      focus-visible:ring-inset focus-visible:ring-violet-400
+      md:p-8
+    "
+                    >
+                      {/* Mobile date */}
+                      <div className="mb-4 md:hidden">
+                        <p className="text-sm font-semibold text-zinc-300">
+                          {experience.date}
+                        </p>
 
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {experience.location}
-                      </p>
-                    </div>
+                        <p className="mt-1 text-sm text-zinc-500">
+                          {experience.location}
+                        </p>
+                      </div>
 
-                    <h3 className="text-xl font-semibold text-white">
-                      {experience.role}
-                    </h3>
+                      {/* Job title and arrow */}
+                      <div className="flex items-start justify-between gap-5">
+                        <div>
+                          <h3 className="text-xl font-semibold text-white">
+                            {experience.role}
+                          </h3>
 
-                    <p className="mt-1 font-medium text-violet-400">
-                      {experience.company}
-                    </p>
+                          <p className="mt-1 font-medium text-violet-400">
+                            {experience.company}
+                          </p>
+                        </div>
 
-                    <p className="mt-5 leading-7 text-zinc-400">
-                      {experience.description}
-                    </p>
-
-                    <ul className="mt-5 space-y-3">
-                      {experience.responsibilities.map((responsibility) => (
-                        <li
-                          key={responsibility}
-                          className="flex gap-3 leading-7 text-zinc-400"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400"
-                          />
-
-                          <span>{responsibility}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {experience.technologies.map((technology) => (
                         <span
-                          key={technology}
-                          className="rounded-full border border-zinc-700 bg-zinc-950/60 px-3 py-1 text-xs text-zinc-300"
+                          aria-hidden="true"
+                          className={`
+          mt-1 flex h-8 w-8 shrink-0 items-center
+          justify-center rounded-full border border-zinc-700
+          text-lg text-violet-400 transition duration-300
+          ${isExpanded ? "rotate-180 bg-violet-500/10" : ""}
+        `}
                         >
-                          {technology}
+                          ↓
                         </span>
-                      ))}
+                      </div>
+
+                      <p className="mt-5 leading-7 text-zinc-400">
+                        {experience.description}
+                      </p>
+
+                      <ul className="mt-5 space-y-3">
+                        {experience.responsibilities.map((responsibility) => (
+                          <li
+                            key={responsibility}
+                            className="flex gap-3 leading-7 text-zinc-400"
+                          >
+                            <span
+                              aria-hidden="true"
+                              className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400"
+                            />
+
+                            <span>{responsibility}</span>
+                          </li>
+                        ))}
+                      </ul>
+
+                      <div className="mt-6 flex flex-wrap gap-2">
+                        {experience.technologies.map((technology) => (
+                          <span
+                            key={technology}
+                            className="
+            rounded-full border border-zinc-700
+            bg-zinc-950/60 px-3 py-1
+            text-xs text-zinc-300
+          "
+                          >
+                            {technology}
+                          </span>
+                        ))}
+                      </div>
+
+                      <p className="mt-6 text-sm font-medium text-violet-400">
+                        {isExpanded ? "Hide work samples" : "View work samples"}
+                      </p>
+                    </button>
+
+                    {/* Expandable content */}
+                    <div
+                      id={`experience-details-${index}`}
+                      className={`
+      grid transition-[grid-template-rows]
+      duration-500 ease-in-out
+      ${isExpanded ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}
+    `}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="border-t border-zinc-800 px-6 pb-6 pt-6 md:px-8 md:pb-8">
+                          <h4 className="text-lg font-semibold text-white">
+                            Work samples
+                          </h4>
+
+                          {/* Photos */}
+                          {experience.photos.length > 0 && (
+                            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                              {experience.photos.map((photo, photoIndex) => (
+                                <img
+                                  key={photo}
+                                  src={photo}
+                                  alt={`${experience.company} work sample ${photoIndex + 1}`}
+                                  className="
+                  aspect-video w-full rounded-xl
+                  border border-zinc-800 object-cover
+                "
+                                />
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Video */}
+                          {experience.video && (
+                            <video
+                              controls
+                              preload="metadata"
+                              className="
+              mt-5 aspect-video w-full rounded-xl
+              border border-zinc-800 bg-black
+            "
+                            >
+                              <source src={experience.video} type="video/mp4" />
+                              Your browser does not support video playback.
+                            </video>
+                          )}
+
+                          {/* Links */}
+                          {experience.links.length > 0 && (
+                            <div className="mt-6 flex flex-wrap gap-3">
+                              {experience.links.map((link) => (
+                                <a
+                                  key={link.url}
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="
+                  rounded-lg border border-violet-500/40
+                  bg-violet-500/10 px-4 py-2
+                  text-sm font-medium text-violet-300
+                  transition hover:border-violet-400
+                  hover:bg-violet-500/20
+                "
+                                >
+                                  {link.label} ↗
+                                </a>
+                              ))}
+                            </div>
+                          )}
+
+                          {experience.photos.length === 0 &&
+                            !experience.video &&
+                            experience.links.length === 0 && (
+                              <p className="mt-4 text-zinc-500">
+                                Work samples will be added soon.
+                              </p>
+                            )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </article>
