@@ -5,6 +5,7 @@ import Background from "./components/layout/background";
 
 import Hero from "./components/sections/hero";
 import About from "./components/sections/about";
+import Education from "./components/sections/education";
 import Projects from "./components/sections/projects";
 import Contact from "./components/sections/contact";
 import Experience from "./components/sections/experience";
@@ -31,6 +32,7 @@ function App() {
         <main className="pt-16">
           {/* <Hero /> */}
           <About />
+          <Education />
           <Experience />
           <Projects />
           <Contact />

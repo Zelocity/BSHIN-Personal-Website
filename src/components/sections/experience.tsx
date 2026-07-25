@@ -84,10 +84,7 @@ function Experience() {
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
 
   return (
-    <section
-      id="experience"
-      className="scroll-mt-16 border-t border-zinc-800/60 px-6 py-20"
-    >
+    <section id="experience" className="scroll-mt-16 px-6 py-20">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
         <div className="col-span-12 overflow-visible rounded-2xl bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
           <header>
@@ -325,12 +322,11 @@ function Experience() {
                                   target="_blank"
                                   rel="noreferrer"
                                   className="
-                  rounded-lg border border-violet-500/40
-                  bg-violet-500/10 px-4 py-2
-                  text-sm font-medium text-violet-300
-                  transition hover:border-violet-400
-                  hover:bg-violet-500/20
-                "
+                                    rounded-lg border border-violet-500/40
+                                    bg-violet-500/10 px-4 py-2
+                                    text-sm font-medium text-violet-300
+                                    transition hover:border-violet-400
+                                    hover:bg-violet-500/20"
                                 >
                                   {link.label} ↗
                                 </a>
