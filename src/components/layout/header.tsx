@@ -7,7 +7,7 @@ const headerLinks = [
 
 function Header() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 h-16 border-b border-zinc-800 bg-taupe-950 text-white backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 h-16 bg-taupe-950">
       <div className="flex h-full items-center justify-between px-6">
         <a
           href="/"

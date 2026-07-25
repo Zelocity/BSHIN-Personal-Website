@@ -7,6 +7,7 @@ import Hero from "./components/sections/hero";
 import About from "./components/sections/about";
 import Projects from "./components/sections/projects";
 import Contact from "./components/sections/contact";
+import Experience from "./components/sections/experience";
 
 function App() {
   return (
@@ -14,8 +15,8 @@ function App() {
       <Background
         dotSize={2}
         gap={25}
-        baseColor="#403a36"
-        glowColor="#827a6c"
+        baseColor="#395254"
+        glowColor="#96e3e2"
         proximity={80}
         glowIntensity={0.1}
         waveSpeed={10}
@@ -30,8 +31,9 @@ function App() {
         <main className="pt-16">
           {/* <Hero /> */}
           <About />
-          {/* <Projects />
-          <Contact /> */}
+          <Experience />
+          <Projects />
+          {/* <Contact /> */}
         </main>
       </div>
     </div>
