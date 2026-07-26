@@ -1,6 +1,8 @@
 import PixelPanel from "../ui/pixelpanel";
 
-const skills = ["React", "TypeScript", "Unity", "C#", "Python", "AR / VR"];
+const skills = ["Software", "Web", "Game", "Full Stack", "AI"];
+
+// const skills = ["React", "TypeScript", "Unity", "C#", "Python", "AR / VR"];
 
 function About() {
   return (
@@ -44,14 +46,20 @@ function About() {
                 </p>
 
                 <p>
-                  My experience includes web development, game development,
-                  augmented reality, virtual reality, and educational
-                  technology.
+                  <p>
+                    Through my professional experience and personal projects, I
+                    have built web applications, developed games, explored
+                    emerging technologies such as AI and XR, and created
+                    educational technology experiences.
+                  </p>
                 </p>
 
                 <p>
-                  I enjoy combining technical problem-solving with creative
-                  design to build useful and engaging digital experiences.
+                  I enjoy exploring new technologies and combining technical
+                  problem-solving with creative thinking to build meaningful and
+                  engaging experiences. I use AI-assisted tools to accelerate
+                  parts of my workflow while reviewing, testing, and refining
+                  the results myself.
                 </p>
               </div>
 

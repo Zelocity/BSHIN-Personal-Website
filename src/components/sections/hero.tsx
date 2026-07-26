@@ -97,7 +97,7 @@ function Hero() {
                       "a Game Developer",
                       "an Interactive Designer",
                       "a Lifelong Learner",
-                      "a Fullstack Developer",
+                      "a Full Stack Developer",
                       "a Music Producer",
                       "a Content Creator",
                       "a Problem Solver",
