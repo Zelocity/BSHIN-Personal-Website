@@ -9,19 +9,20 @@ import Education from "./components/sections/education";
 import Projects from "./components/sections/projects";
 import Contact from "./components/sections/contact";
 import Experience from "./components/sections/experience";
+import Skills from "./components/sections/skills";
 
 function App() {
   return (
     <div className="min-h-screen text-white">
       <Background
-        dotSize={2}
-        gap={25}
+        dotSize={1}
+        gap={35}
         baseColor="#395254"
-        glowColor="#96e3e2"
+        glowColor="#7c7d7c"
         proximity={80}
         glowIntensity={0.1}
         waveSpeed={10}
-        driftAmount={2}
+        driftAmount={3}
         driftSpeed={3}
       />
 
@@ -35,6 +36,7 @@ function App() {
           <Education />
           <Experience />
           <Projects />
+          <Skills />
           <Contact />
         </main>
       </div>
