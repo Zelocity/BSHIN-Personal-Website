@@ -1,4 +1,4 @@
-import PixelPanel from "../ui/PixelPanel";
+import PixelPanel from "../ui/pixelpanel";
 
 type ContactLink = {
   label: string;
