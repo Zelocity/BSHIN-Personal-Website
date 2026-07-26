@@ -26,6 +26,7 @@
   --color-frame: var(--theme-frame);
   --color-shadow: var(--theme-shadow);
   --color-divider: var(--theme-divider);
+  --color-edge: var(--theme-edge);
 }
 
 /* Default warm theme */
@@ -46,6 +47,8 @@
   --theme-frame: #3f291f;
   --theme-shadow: #8b5a36;
   --theme-divider: #754b35;
+
+  --theme-edge: #70412d;
 
   color-scheme: light;
 }
@@ -68,6 +71,8 @@ html.dark {
   --theme-frame: #d29c65;
   --theme-shadow: #100b08;
   --theme-divider: #896348;
+
+  --theme-edge: #5a3827;
 
   color-scheme: dark;
 }

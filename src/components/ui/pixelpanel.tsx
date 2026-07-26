@@ -46,14 +46,28 @@ function PixelPanel({
   const backgroundClass =
     variant === "primary" ? "bg-panel" : "bg-panel-secondary";
 
-  const borderStyle = {
+  const safeShadowSize = Math.max(0, shadowSize);
+  const edgeOffset = Math.round(safeShadowSize * 0.5);
+  const hasShadow = safeShadowSize > 0;
+
+  const deepShadowStyle = {
     clipPath: pixelShape,
-    filter: `drop-shadow(
-      ${shadowSize}px
-      ${shadowSize}px
-      0
-      var(--theme-shadow)
+    transform: `translate(
+      ${safeShadowSize}px,
+      ${safeShadowSize}px
     )`,
+  } satisfies CSSProperties;
+
+  const edgeStyle = {
+    clipPath: pixelShape,
+    transform: `translate(
+      ${edgeOffset}px,
+      ${edgeOffset}px
+    )`,
+  } satisfies CSSProperties;
+
+  const frontPanelStyle = {
+    clipPath: pixelShape,
   } satisfies CSSProperties;
 
   return (
@@ -65,13 +79,39 @@ function PixelPanel({
         ${className}
       `}
     >
-      {/* Pixel border and background */}
+      {/* Deep shadow */}
+      {hasShadow && (
+        <div
+          aria-hidden="true"
+          style={deepShadowStyle}
+          className="
+            pointer-events-none
+            absolute inset-0 z-0
+            bg-shadow
+          "
+        />
+      )}
+
+      {/* Middle 3D edge */}
+      {hasShadow && (
+        <div
+          aria-hidden="true"
+          style={edgeStyle}
+          className="
+            pointer-events-none
+            absolute inset-0 z-10
+            bg-edge
+          "
+        />
+      )}
+
+      {/* Front pixel border */}
       <div
         aria-hidden="true"
-        style={borderStyle}
+        style={frontPanelStyle}
         className="
           pointer-events-none
-          absolute inset-0 z-0
+          absolute inset-0 z-20
           bg-frame p-[3px]
         "
       >
@@ -86,30 +126,25 @@ function PixelPanel({
         aria-hidden="true"
         className="
           pointer-events-none
-          absolute left-5 right-5 top-1 z-10
-          h-1 bg-panel-highlight/60
+          absolute left-5 right-5 top-1 z-30
+          h-1 bg-panel-highlight/70
         "
       />
 
-      {/* Bottom shading */}
-      <div
-        aria-hidden="true"
-        className="
-          pointer-events-none
-          absolute bottom-1 left-5 right-5 z-10
-          h-1 bg-shadow/30
-        "
-      />
+      {/* Bottom inner shading */}
+      {hasShadow && (
+        <div
+          aria-hidden="true"
+          className="
+            pointer-events-none
+            absolute bottom-1 left-5 right-5 z-30
+            h-1 bg-edge/35
+          "
+        />
+      )}
 
-      {/* Content is not clipped */}
-      <div
-        className={`
-          relative z-20
-          ${contentClassName}
-        `}
-      >
-        {children}
-      </div>
+      {/* Panel content */}
+      <div className={`relative z-40 ${contentClassName}`}>{children}</div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import PixelPanel from "../ui/PixelPanel";
+import PixelPanel from "../ui/pixelpanel";
 
 type ExperienceLink = {
   label: string;
@@ -199,7 +199,6 @@ function Experience() {
                   {/* Individual job container */}
                   <PixelPanel
                     variant="secondary"
-                    shadowSize={5}
                     className="
                       transition-transform duration-200
                       hover:-translate-x-0.5

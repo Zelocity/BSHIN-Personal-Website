@@ -1,4 +1,4 @@
-import PixelPanel from "../ui/PixelPanel";
+import PixelPanel from "../ui/pixelpanel";
 
 const skills = ["React", "TypeScript", "Unity", "C#", "Python", "AR / VR"];
 

@@ -1,4 +1,4 @@
-import PixelPanel from "../ui/PixelPanel";
+import PixelPanel from "../ui/pixelpanel";
 
 type EducationItem = {
   school: string;
@@ -92,7 +92,6 @@ function Education() {
             >
               <PixelPanel
                 variant="secondary"
-                shadowSize={5}
                 className="
                   col-span-12
                   transition-transform duration-200
