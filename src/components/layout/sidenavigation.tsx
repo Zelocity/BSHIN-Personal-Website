@@ -4,6 +4,7 @@ const navigationLinks = [
   { label: "Education", href: "#education" },
   { label: "Experience", href: "#experience" },
   { label: "Projects", href: "#projects" },
+  { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },
 ];
 
