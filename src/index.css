@@ -1,17 +1,89 @@
 @import "tailwindcss";
 
+/*
+  Connect Tailwind utility names to the active theme variables.
+
+  Examples:
+  bg-page
+  bg-panel
+  text-ink
+  text-muted
+  border-frame
+*/
+@theme inline {
+  --color-page: var(--theme-page);
+  --color-panel: var(--theme-panel);
+  --color-panel-secondary: var(--theme-panel-secondary);
+  --color-panel-highlight: var(--theme-panel-highlight);
+
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+
+  --color-accent: var(--theme-accent);
+  --color-accent-hover: var(--theme-accent-hover);
+  --color-accent-text: var(--theme-accent-text);
+
+  --color-frame: var(--theme-frame);
+  --color-shadow: var(--theme-shadow);
+  --color-divider: var(--theme-divider);
+}
+
+/* Default warm theme */
+:root {
+  --theme-page: #d5ad6d;
+
+  --theme-panel: #f1d39a;
+  --theme-panel-secondary: #e7bd78;
+  --theme-panel-highlight: #fff0c9;
+
+  --theme-ink: #3f291f;
+  --theme-muted: #6f4b38;
+
+  --theme-accent: #b84f2e;
+  --theme-accent-hover: #c95b36;
+  --theme-accent-text: #fff0c9;
+
+  --theme-frame: #3f291f;
+  --theme-shadow: #8b5a36;
+  --theme-divider: #754b35;
+
+  color-scheme: light;
+}
+
+/* Dark palette for later */
+html.dark {
+  --theme-page: #1d1511;
+
+  --theme-panel: #30231c;
+  --theme-panel-secondary: #3c2a20;
+  --theme-panel-highlight: #634630;
+
+  --theme-ink: #f3d9aa;
+  --theme-muted: #c29c73;
+
+  --theme-accent: #e17148;
+  --theme-accent-hover: #ef865d;
+  --theme-accent-text: #241711;
+
+  --theme-frame: #d29c65;
+  --theme-shadow: #100b08;
+  --theme-divider: #896348;
+
+  color-scheme: dark;
+}
+
 html {
   scroll-behavior: smooth;
+  background: var(--theme-page);
 }
 
 body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: #09090b;
+  background: var(--theme-page);
+  color: var(--theme-ink);
 }
 
-button,
-a {
-  font: inherit;
+::selection {
+  background: var(--theme-accent);
+  color: var(--theme-accent-text);
 }

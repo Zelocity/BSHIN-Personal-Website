@@ -1,27 +1,43 @@
+import PixelPanel from "../ui/PixelPanel";
+
+const skills = ["React", "TypeScript", "Unity", "C#", "Python", "AR / VR"];
+
 function About() {
   return (
     <section id="about" className="scroll-mt-16 px-6 py-20">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
-        <div className="col-span-12 rounded-2xl bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
+        <PixelPanel
+          className="col-span-12 lg:col-start-3 lg:col-span-8"
+          contentClassName="p-6 sm:p-8"
+        >
           <div className="grid items-start gap-8 md:grid-cols-[180px_minmax(0,1fr)]">
             {/* Profile image */}
-            <img
-              src="/images/profile.jpg"
-              alt="Brandon Shin"
-              className="mx-auto aspect-square w-44 rounded-2xl border border-zinc-800 object-cover md:mx-0 md:w-full"
-            />
+            <div className="mx-auto w-44 md:mx-0 md:w-full">
+              <img
+                src="/images/profile.jpg"
+                alt="Brandon Shin"
+                className="
+                  aspect-square w-full object-cover
+                  border-4 border-frame
+                  bg-panel-secondary
+                  shadow-[5px_5px_0_var(--theme-shadow)]
+                "
+              />
+            </div>
 
             {/* About content */}
-            <div className="text-left">
-              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-400">
+            <div>
+              <p className="text-sm font-bold uppercase tracking-[0.25em] text-accent">
                 About
               </p>
 
-              <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              <h2 className="mt-3 text-3xl font-bold text-ink sm:text-4xl">
                 Brandon Shin
               </h2>
 
-              <div className="mt-5 space-y-4 leading-7 text-zinc-400">
+              <div className="my-5 border-t-2 border-dashed border-divider/50" />
+
+              <div className="space-y-4 leading-7 text-muted">
                 <p>
                   I am a computer science graduate from UC Riverside and an
                   incoming Master of Software Engineering student at UC Irvine.
@@ -39,19 +55,22 @@ function About() {
                 </p>
               </div>
 
-              {/* Skills */}
-              <div className="mt-6 flex flex-wrap gap-2">
-                {[
-                  "React",
-                  "TypeScript",
-                  "Unity",
-                  "C#",
-                  "Python",
-                  "AR / VR",
-                ].map((skill) => (
+              {/* Skill tags */}
+              <div className="mt-6 flex flex-wrap gap-3">
+                {skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full border border-zinc-700 bg-zinc-900/70 px-3 py-1 text-xs text-zinc-300"
+                    className="
+                      border-2 border-frame
+                      bg-panel-secondary px-3 py-1.5
+                      text-xs font-bold text-ink
+                      shadow-[2px_2px_0_var(--theme-shadow)]
+                      transition duration-150
+                      hover:-translate-x-0.5
+                      hover:-translate-y-0.5
+                      hover:bg-panel-highlight
+                      hover:text-accent
+                    "
                   >
                     {skill}
                   </span>
@@ -59,7 +78,7 @@ function About() {
               </div>
             </div>
           </div>
-        </div>
+        </PixelPanel>
       </div>
     </section>
   );

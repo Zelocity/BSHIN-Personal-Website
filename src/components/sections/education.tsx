@@ -1,3 +1,5 @@
+import PixelPanel from "../ui/PixelPanel";
+
 type EducationItem = {
   school: string;
   degree: string;
@@ -54,113 +56,147 @@ const education: EducationItem[] = [
 
 function Education() {
   return (
-    <section id="education" className="scroll-mt-16 px-6 py-3">
-      <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
-        <div className="col-span-12 rounded-2xl bg-zinc-950/80 p-6 backdrop-blur-sm sm:p-8 lg:col-start-3 lg:col-span-8">
-          <header>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-violet-400">
-              Education
-            </p>
+    <section id="education" className="scroll-mt-16 px-6 py-10">
+      <div className="mx-auto max-w-7xl">
+        {/* Section heading */}
+        <div className="grid grid-cols-12 gap-8">
+          <PixelPanel
+            className="col-span-12 lg:col-start-3 lg:col-span-8"
+            contentClassName="p-5 sm:p-6"
+          >
+            <header>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-accent sm:text-sm">
+                Education
+              </p>
 
-            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              Academic background
-            </h2>
+              <h2 className="mt-2 text-2xl font-bold text-ink sm:text-3xl">
+                Academic background
+              </h2>
 
-            <p className="mt-4 max-w-2xl leading-7 text-zinc-400">
-              My academic experience in computer science and professional
-              software engineering.
-            </p>
-          </header>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+                My academic experience in computer science and professional
+                software engineering.
+              </p>
 
-          {/* Education cards */}
-          <div className="mt-10 space-y-10">
-            {education.map((item) => (
-              <article
-                key={`${item.school}-${item.degree}`}
+              <div className="mt-4 border-t-2 border-dashed border-divider/50" />
+            </header>
+          </PixelPanel>
+        </div>
+
+        {/* Individual education panels */}
+        <div className="mt-2 space-y-2">
+          {education.map((item) => (
+            <div
+              key={`${item.school}-${item.degree}`}
+              className="grid grid-cols-12 gap-8"
+            >
+              <PixelPanel
+                variant="secondary"
+                shadowSize={5}
                 className="
-                -mx-6 overflow-hidden rounded-2xl
-                border border-zinc-800 bg-zinc-900/60
-                transition duration-300
-                hover:border-violet-500/50
-                sm:-mx-8"
+                  col-span-12
+                  transition-transform duration-200
+                  hover:-translate-x-0.5
+                  hover:-translate-y-0.5
+                  lg:col-start-3 lg:col-span-8
+                "
+                contentClassName="p-5 sm:p-6"
               >
-                <div className="p-6 sm:p-8">
-                  <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <h3 className="text-xl font-semibold text-white">
-                          {item.degree}
-                        </h3>
+                {/* Degree, school, date, and location */}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold text-ink sm:text-xl">
+                        {item.degree}
+                      </h3>
 
-                        {item.status && (
-                          <span className="rounded-full border border-violet-500/40 bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-300">
-                            {item.status}
-                          </span>
-                        )}
-                      </div>
-
-                      <p className="mt-2 font-medium text-violet-400">
-                        {item.school}
-                      </p>
-                    </div>
-
-                    <div className="shrink-0 sm:text-right">
-                      <p className="text-sm font-semibold text-zinc-300">
-                        {item.date}
-                      </p>
-
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {item.location}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-6 leading-7 text-zinc-400">
-                    {item.description}
-                  </p>
-
-                  <div className="mt-6">
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-300">
-                      Highlights
-                    </h4>
-
-                    <ul className="mt-3 space-y-3">
-                      {item.highlights.map((highlight) => (
-                        <li
-                          key={highlight}
-                          className="flex gap-3 leading-7 text-zinc-400"
-                        >
-                          <span
-                            aria-hidden="true"
-                            className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-violet-400"
-                          />
-
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="mt-6">
-                    <h4 className="text-sm font-semibold uppercase tracking-wider text-zinc-300">
-                      Coursework
-                    </h4>
-
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {item.coursework.map((course) => (
+                      {item.status && (
                         <span
-                          key={course}
-                          className="rounded-full border border-zinc-700 bg-zinc-950/60 px-3 py-1 text-xs text-zinc-300"
+                          className="
+                            border-2 border-frame
+                            bg-accent px-2.5 py-1
+                            text-[10px] font-bold uppercase
+                            tracking-wide text-accent-text
+                            shadow-[2px_2px_0_var(--theme-shadow)]
+                          "
                         >
-                          {course}
+                          {item.status}
                         </span>
-                      ))}
+                      )}
                     </div>
+
+                    <p className="mt-1 font-bold text-accent">{item.school}</p>
+                  </div>
+
+                  <div className="shrink-0 sm:text-right">
+                    <p className="text-sm font-bold text-ink">{item.date}</p>
+
+                    <p className="mt-0.5 text-sm text-muted">{item.location}</p>
                   </div>
                 </div>
-              </article>
-            ))}
-          </div>
+
+                {/* Description */}
+                <p className="mt-4 text-sm leading-6 text-muted sm:text-base">
+                  {item.description}
+                </p>
+
+                {/* Highlights */}
+                <div className="mt-4 border-t-2 border-dashed border-divider/40 pt-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-ink">
+                    Highlights
+                  </h4>
+
+                  <ul className="mt-2 space-y-2">
+                    {item.highlights.map((highlight) => (
+                      <li
+                        key={highlight}
+                        className="flex gap-3 text-sm leading-6 text-muted"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="
+                            mt-2 h-2 w-2 shrink-0
+                            bg-accent
+                            shadow-[2px_2px_0_var(--theme-shadow)]
+                          "
+                        />
+
+                        <span>{highlight}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Coursework */}
+                <div className="mt-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-ink">
+                    Coursework
+                  </h4>
+
+                  <div className="mt-2 flex flex-wrap gap-2">
+                    {item.coursework.map((course) => (
+                      <span
+                        key={course}
+                        className="
+                          border-2 border-frame
+                          bg-panel px-2.5 py-1
+                          text-[11px] font-bold text-ink
+                          shadow-[2px_2px_0_var(--theme-shadow)]
+                          transition duration-150
+                          hover:-translate-x-0.5
+                          hover:-translate-y-0.5
+                          hover:bg-panel-highlight
+                          hover:text-accent
+                        "
+                      >
+                        {course}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </PixelPanel>
+            </div>
+          ))}
         </div>
       </div>
     </section>
