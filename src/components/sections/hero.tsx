@@ -90,13 +90,18 @@ function Hero() {
                     sm:text-xl sm:leading-8
                   "
                 >
-                  I build{" "}
+                  I am{" "}
                   <TypewriterText
                     words={[
-                      "software applications",
-                      "games",
-                      "educational tools",
-                      "interactive experiences",
+                      "a Software Developer",
+                      "a Game Developer",
+                      "an Interactive Designer",
+                      "a Lifelong Learner",
+                      "a Fullstack Developer",
+                      "a Music Producer",
+                      "a Content Creator",
+                      "a Problem Solver",
+                      "ready for the next challenge",
                     ]}
                   />
                 </p>
@@ -108,8 +113,8 @@ function Hero() {
                     sm:text-base sm:leading-7
                   "
                 >
-                  Computer science graduate interested in web development,
-                  games, educational technology, and creative software.
+                  Computer science graduate interested in building software,
+                  creating content, and continuously learning new technologies.
                 </p>
 
                 {/* Main actions */}
