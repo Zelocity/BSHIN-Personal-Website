@@ -1,6 +1,7 @@
 import Header from "../components/layout/header";
 import SideNavigation from "../components/layout/sidenavigation";
 import Background from "../components/layout/background";
+import SectionFadeManager from "../components/ui/sectionfademanager";
 
 import About from "../components/sections/about";
 import Education from "../components/sections/education";
@@ -30,14 +31,15 @@ function HomePage() {
       {/* Website content */}
       <div className="relative z-10">
         <Header />
-        <SideNavigation />
+        {/* <SideNavigation /> */}
 
         <main className="pt-16">
+          <SectionFadeManager />
           <About />
+          <Skills />
           <Education />
           <Experience />
           <Projects />
-          <Skills />
           <Contact />
         </main>
       </div>

@@ -17,7 +17,7 @@ function GuestbookPage() {
 
         <div className="mt-10 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
           <iframe
-            src="https://YOUR-USERNAME.atabook.org/"
+            src="https://brandonshin.atabook.org/"
             title="Guestbook"
             loading="lazy"
             className="h-[800px] w-full border-0"

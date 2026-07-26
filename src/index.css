@@ -92,3 +92,41 @@ body {
   background: var(--theme-accent);
   color: var(--theme-accent-text);
 }
+
+main > section[id] {
+  opacity: 0.4;
+  filter: blur(0.5px);
+  transform: translateY(16px);
+
+  transition:
+    opacity 600ms ease,
+    filter 600ms ease,
+    transform 600ms ease;
+
+  will-change: opacity, filter, transform;
+}
+
+main > section[id][data-active-section="true"] {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0);
+}
+
+main > section#contact {
+  transform: none;
+  transition: opacity 500ms ease;
+}
+
+main > section#contact[data-active-section="true"] {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > section[id],
+  main > section[id][data-active-section="true"] {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}

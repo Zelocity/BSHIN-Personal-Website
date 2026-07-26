@@ -26,7 +26,7 @@ const contactLinks: ContactLink[] = [
 
 function Contact() {
   return (
-    <section id="contact" className="scroll-mt-16 px-6 py-10">
+    <section id="contact" className="scroll-mt-16 px-2 pb-60 pt-10">
       <div className="mx-auto grid max-w-7xl grid-cols-12 gap-8">
         <PixelPanel
           className="col-span-12 lg:col-start-3 lg:col-span-8"
