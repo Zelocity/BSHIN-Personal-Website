@@ -9,6 +9,7 @@ import Experience from "../components/sections/experience";
 import Projects from "../components/sections/projects";
 import Skills from "../components/sections/skills";
 import Contact from "../components/sections/contact";
+import Hero from "../components/sections/hero";
 
 function HomePage() {
   return (
@@ -19,9 +20,9 @@ function HomePage() {
           dotSize={1}
           gap={35}
           baseColor="#395254"
-          glowColor="#7c7d7c"
+          glowColor="#ffefde"
           proximity={80}
-          glowIntensity={0.1}
+          glowIntensity={0.5}
           waveSpeed={10}
           driftAmount={3}
           driftSpeed={3}
@@ -35,6 +36,7 @@ function HomePage() {
 
         <main className="pt-16">
           <SectionFadeManager />
+          <Hero />
           <About />
           <Skills />
           <Education />

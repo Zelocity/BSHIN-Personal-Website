@@ -3,15 +3,29 @@ import { useCallback, useEffect, useMemo, useRef, type ReactNode } from "react";
 export interface BackgroundProps {
   className?: string;
   children?: ReactNode;
+
   dotSize?: number;
   gap?: number;
+
   baseColor?: string;
   glowColor?: string;
+
   proximity?: number;
   glowIntensity?: number;
+
   waveSpeed?: number;
   driftAmount?: number;
   driftSpeed?: number;
+
+  scrollParallax?: number;
+
+  twinkleChance?: number;
+  twinkleAmount?: number;
+  twinkleSpeed?: number;
+
+  showConnections?: boolean;
+  connectionRadius?: number;
+  connectionOpacity?: number;
 }
 
 type RGB = {
@@ -20,15 +34,22 @@ type RGB = {
   b: number;
 };
 
-type Dot = {
-  baseX: number;
-  baseY: number;
-  baseOpacity: number;
-  phaseX: number;
-  phaseY: number;
-  speedX: number;
-  speedY: number;
-  movement: number;
+type CanvasSize = {
+  width: number;
+  height: number;
+};
+
+type RenderedDot = {
+  column: number;
+  row: number;
+  x: number;
+  y: number;
+  radius: number;
+  opacity: number;
+  red: number;
+  green: number;
+  blue: number;
+  glow: number;
 };
 
 function hexToRgb(hex: string): RGB {
@@ -47,30 +68,77 @@ function hexToRgb(hex: string): RGB {
       };
 }
 
+/*
+ * Returns a consistent random-looking number.
+ *
+ * The same grid location and seed always return the same
+ * result, which prevents dots from changing randomly while
+ * scrolling.
+ */
+function seededRandom(column: number, row: number, seed: number) {
+  const value =
+    Math.sin(column * 12.9898 + row * 78.233 + seed * 37.719) * 43758.5453;
+
+  return value - Math.floor(value);
+}
+
+function getDotKey(column: number, row: number) {
+  return `${column}:${row}`;
+}
+
 function Background({
   className = "",
   children,
+
   dotSize = 2,
   gap = 24,
+
   baseColor = "#404040",
   glowColor = "#8b5cf6",
+
   proximity = 120,
   glowIntensity = 1,
+
   waveSpeed = 0.5,
   driftAmount = 2.5,
   driftSpeed = 1,
+
+  /*
+   * A positive value moves the dots upward when
+   * the page scrolls downward.
+   */
+  scrollParallax = 0.08,
+
+  /*
+   * Only a small percentage of dots twinkle.
+   */
+  twinkleChance = 0.06,
+  twinkleAmount = 0.5,
+  twinkleSpeed = 1,
+
+  /*
+   * Connections appear only around the mouse.
+   */
+  showConnections = true,
+  connectionRadius = 160,
+  connectionOpacity = 0.12,
 }: BackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const dotsRef = useRef<Dot[]>([]);
+
+  const canvasSizeRef = useRef<CanvasSize>({
+    width: 0,
+    height: 0,
+  });
 
   const mouseRef = useRef({
     x: -1000,
     y: -1000,
   });
 
+  const scrollRef = useRef(0);
   const animationRef = useRef<number | null>(null);
-  const startTimeRef = useRef(Date.now());
+  const startTimeRef = useRef(performance.now());
 
   const baseRgb = useMemo(() => {
     return hexToRgb(baseColor);
@@ -80,7 +148,7 @@ function Background({
     return hexToRgb(glowColor);
   }, [glowColor]);
 
-  const buildGrid = useCallback(() => {
+  const buildCanvas = useCallback(() => {
     const canvas = canvasRef.current;
     const container = containerRef.current;
 
@@ -103,170 +171,343 @@ function Background({
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    const cellSize = dotSize + gap;
-    const columns = Math.ceil(rect.width / cellSize) + 1;
-    const rows = Math.ceil(rect.height / cellSize) + 1;
-
-    const offsetX = (rect.width - (columns - 1) * cellSize) / 2;
-
-    const offsetY = (rect.height - (rows - 1) * cellSize) / 2;
-
-    const dots: Dot[] = [];
-
-    for (let row = 0; row < rows; row += 1) {
-      for (let column = 0; column < columns; column += 1) {
-        dots.push({
-          baseX: offsetX + column * cellSize,
-          baseY: offsetY + row * cellSize,
-          baseOpacity: 0.3 + Math.random() * 0.2,
-          phaseX: Math.random() * Math.PI * 2,
-          phaseY: Math.random() * Math.PI * 2,
-          speedX: 0.25 + Math.random() * 0.35,
-          speedY: 0.25 + Math.random() * 0.35,
-          movement: driftAmount * (0.4 + Math.random() * 0.6),
-        });
-      }
-    }
-
-    dotsRef.current = dots;
-  }, [dotSize, gap, driftAmount]);
+    canvasSizeRef.current = {
+      width: rect.width,
+      height: rect.height,
+    };
+  }, []);
 
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
+    const context = canvas?.getContext("2d");
 
-    if (!canvas) {
+    if (!canvas || !context) {
       return;
     }
 
-    const context = canvas.getContext("2d");
+    const { width, height } = canvasSizeRef.current;
 
-    if (!context) {
+    if (width === 0 || height === 0) {
+      animationRef.current = window.requestAnimationFrame(draw);
+
       return;
     }
-
-    const dpr = window.devicePixelRatio || 1;
-    const width = canvas.width / dpr;
-    const height = canvas.height / dpr;
 
     context.clearRect(0, 0, width, height);
 
-    const elapsedSeconds = (Date.now() - startTimeRef.current) / 1000;
+    const elapsedSeconds = (performance.now() - startTimeRef.current) / 1000;
 
+    const cellSize = dotSize + gap;
     const waveTime = elapsedSeconds * waveSpeed;
+
+    /*
+     * Positive scrollParallax means the dots move upward
+     * while the page moves downward.
+     */
+    const scrollDistance = scrollRef.current * scrollParallax;
+
+    const horizontalOffset = (width % cellSize) / 2;
+
+    const verticalOffset = (height % cellSize) / 2;
+
+    const overscan = Math.max(2, Math.ceil(driftAmount / cellSize) + 2);
+
+    /*
+     * Calculate which permanent world rows are currently
+     * visible. This keeps scrolling smooth and avoids
+     * overlapping duplicate dots.
+     */
+    const firstRow =
+      Math.floor((scrollDistance - verticalOffset) / cellSize) - overscan;
+
+    const lastRow =
+      Math.ceil((scrollDistance + height - verticalOffset) / cellSize) +
+      overscan;
+
+    const firstColumn = Math.floor(-horizontalOffset / cellSize) - overscan;
+
+    const lastColumn =
+      Math.ceil((width - horizontalOffset) / cellSize) + overscan;
 
     const mouseX = mouseRef.current.x;
     const mouseY = mouseRef.current.y;
     const proximitySquared = proximity * proximity;
 
-    for (const dot of dotsRef.current) {
-      const animatedX =
-        dot.baseX +
-        Math.sin(elapsedSeconds * dot.speedX * driftSpeed + dot.phaseX) *
-          dot.movement;
+    const renderedDots: RenderedDot[] = [];
+    const dotLookup = new Map<string, RenderedDot>();
 
-      const animatedY =
-        dot.baseY +
-        Math.cos(elapsedSeconds * dot.speedY * driftSpeed + dot.phaseY) *
-          dot.movement;
+    /*
+     * Calculate every visible dot first.
+     *
+     * Lines are drawn after this step but before the dots,
+     * so the dots remain visually on top.
+     */
+    for (let row = firstRow; row <= lastRow; row += 1) {
+      for (let column = firstColumn; column <= lastColumn; column += 1) {
+        const baseOpacity = 0.3 + seededRandom(column, row, 1) * 0.2;
 
-      const differenceX = animatedX - mouseX;
-      const differenceY = animatedY - mouseY;
+        const phaseX = seededRandom(column, row, 2) * Math.PI * 2;
 
-      const distanceSquared =
-        differenceX * differenceX + differenceY * differenceY;
+        const phaseY = seededRandom(column, row, 3) * Math.PI * 2;
 
-      const wave =
-        Math.sin(animatedX * 0.02 + animatedY * 0.02 + waveTime) * 0.5 + 0.5;
+        const speedX = 0.25 + seededRandom(column, row, 4) * 0.35;
 
-      const waveOpacity = dot.baseOpacity + wave * 0.15;
+        const speedY = 0.25 + seededRandom(column, row, 5) * 0.35;
 
-      const waveScale = 1 + wave * 0.2;
+        const movement =
+          driftAmount * (0.4 + seededRandom(column, row, 6) * 0.6);
 
-      let opacity = waveOpacity;
-      let scale = waveScale;
+        const baseX = horizontalOffset + column * cellSize;
 
-      let red = baseRgb.r;
-      let green = baseRgb.g;
-      let blue = baseRgb.b;
+        const baseY = verticalOffset + row * cellSize - scrollDistance;
 
-      let glow = 0;
+        const animatedX =
+          baseX +
+          Math.sin(elapsedSeconds * speedX * driftSpeed + phaseX) * movement;
 
-      if (distanceSquared < proximitySquared) {
-        const distance = Math.sqrt(distanceSquared);
-        const progress = 1 - distance / proximity;
+        const animatedY =
+          baseY +
+          Math.cos(elapsedSeconds * speedY * driftSpeed + phaseY) * movement;
 
-        const easedProgress = progress * progress * (3 - 2 * progress);
+        if (
+          animatedX < -cellSize ||
+          animatedX > width + cellSize ||
+          animatedY < -cellSize ||
+          animatedY > height + cellSize
+        ) {
+          continue;
+        }
 
-        red = Math.round(baseRgb.r + (glowRgb.r - baseRgb.r) * easedProgress);
+        const differenceX = animatedX - mouseX;
+        const differenceY = animatedY - mouseY;
 
-        green = Math.round(baseRgb.g + (glowRgb.g - baseRgb.g) * easedProgress);
+        const distanceSquared =
+          differenceX * differenceX + differenceY * differenceY;
 
-        blue = Math.round(baseRgb.b + (glowRgb.b - baseRgb.b) * easedProgress);
+        const wave =
+          Math.sin(animatedX * 0.02 + animatedY * 0.02 + waveTime) * 0.5 + 0.5;
 
-        opacity = Math.min(1, waveOpacity + easedProgress * 0.7);
+        /*
+         * A small percentage of dots become stars.
+         */
+        const canTwinkle = seededRandom(column, row, 7) < twinkleChance;
 
-        scale = waveScale + easedProgress * 0.8;
+        const twinklePhase = seededRandom(column, row, 8) * Math.PI * 2;
 
-        glow = easedProgress * glowIntensity;
+        const individualTwinkleSpeed =
+          0.5 + seededRandom(column, row, 9) * 1.25;
+
+        const rawTwinkle =
+          Math.sin(
+            elapsedSeconds * twinkleSpeed * individualTwinkleSpeed +
+              twinklePhase,
+          ) *
+            0.5 +
+          0.5;
+
+        /*
+         * Raising the value makes the twinkle appear briefly
+         * instead of constantly pulsing.
+         */
+        const twinkle = canTwinkle
+          ? Math.pow(rawTwinkle, 5) * twinkleAmount
+          : 0;
+
+        let opacity = baseOpacity + wave * 0.12 + twinkle * 0.45;
+
+        let scale = 1 + wave * 0.18 + twinkle * 0.85;
+
+        let red = baseRgb.r;
+        let green = baseRgb.g;
+        let blue = baseRgb.b;
+
+        let glow = twinkle * 0.15;
+
+        /*
+         * Cursor glow effect.
+         */
+        if (distanceSquared < proximitySquared) {
+          const distance = Math.sqrt(distanceSquared);
+
+          const progress = 1 - distance / proximity;
+
+          const easedProgress = progress * progress * (3 - 2 * progress);
+
+          red = Math.round(baseRgb.r + (glowRgb.r - baseRgb.r) * easedProgress);
+
+          green = Math.round(
+            baseRgb.g + (glowRgb.g - baseRgb.g) * easedProgress,
+          );
+
+          blue = Math.round(
+            baseRgb.b + (glowRgb.b - baseRgb.b) * easedProgress,
+          );
+
+          opacity += easedProgress * 0.65;
+          scale += easedProgress * 0.75;
+
+          glow = Math.max(glow, easedProgress * glowIntensity);
+        }
+
+        opacity = Math.min(1, opacity);
+
+        const dot: RenderedDot = {
+          column,
+          row,
+          x: animatedX,
+          y: animatedY,
+          radius: (dotSize / 2) * scale,
+          opacity,
+          red,
+          green,
+          blue,
+          glow,
+        };
+
+        renderedDots.push(dot);
+
+        dotLookup.set(getDotKey(column, row), dot);
+      }
+    }
+
+    /*
+     * Draw faint connections near the cursor.
+     *
+     * Each dot connects only to the dot on its right and
+     * below it, preventing duplicated lines.
+     */
+    if (showConnections && connectionRadius > 0 && mouseX > -500) {
+      context.save();
+      context.lineWidth = 1;
+
+      const neighborDirections = [
+        [1, 0],
+        [0, 1],
+      ] as const;
+
+      for (const dot of renderedDots) {
+        for (const [columnOffset, rowOffset] of neighborDirections) {
+          const neighbor = dotLookup.get(
+            getDotKey(dot.column + columnOffset, dot.row + rowOffset),
+          );
+
+          if (!neighbor) {
+            continue;
+          }
+
+          const midpointX = (dot.x + neighbor.x) / 2;
+
+          const midpointY = (dot.y + neighbor.y) / 2;
+
+          const mouseDifferenceX = midpointX - mouseX;
+
+          const mouseDifferenceY = midpointY - mouseY;
+
+          const mouseDistance = Math.sqrt(
+            mouseDifferenceX * mouseDifferenceX +
+              mouseDifferenceY * mouseDifferenceY,
+          );
+
+          if (mouseDistance > connectionRadius) {
+            continue;
+          }
+
+          const cursorProgress = 1 - mouseDistance / connectionRadius;
+
+          const easedProgress = cursorProgress * cursorProgress;
+
+          const alpha = connectionOpacity * easedProgress;
+
+          context.beginPath();
+          context.moveTo(dot.x, dot.y);
+          context.lineTo(neighbor.x, neighbor.y);
+
+          context.strokeStyle = `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${alpha})`;
+
+          context.stroke();
+        }
       }
 
-      const radius = (dotSize / 2) * scale;
+      context.restore();
+    }
 
-      if (glow > 0) {
-        const gradient = context.createRadialGradient(
-          animatedX,
-          animatedY,
-          0,
-          animatedX,
-          animatedY,
-          radius * 4,
-        );
-
-        gradient.addColorStop(
-          0,
-          `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${glow * 0.4})`,
-        );
-
-        gradient.addColorStop(
-          0.5,
-          `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${glow * 0.1})`,
-        );
-
-        gradient.addColorStop(
-          1,
-          `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, 0)`,
-        );
-
-        context.beginPath();
-
-        context.arc(animatedX, animatedY, radius * 4, 0, Math.PI * 2);
-
-        context.fillStyle = gradient;
-        context.fill();
+    /*
+     * Draw glows first.
+     */
+    for (const dot of renderedDots) {
+      if (dot.glow <= 0) {
+        continue;
       }
+
+      const glowRadius = dot.radius * 4;
+
+      const gradient = context.createRadialGradient(
+        dot.x,
+        dot.y,
+        0,
+        dot.x,
+        dot.y,
+        glowRadius,
+      );
+
+      gradient.addColorStop(
+        0,
+        `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${dot.glow * 0.4})`,
+      );
+
+      gradient.addColorStop(
+        0.5,
+        `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, ${dot.glow * 0.1})`,
+      );
+
+      gradient.addColorStop(
+        1,
+        `rgba(${glowRgb.r}, ${glowRgb.g}, ${glowRgb.b}, 0)`,
+      );
 
       context.beginPath();
 
-      context.arc(animatedX, animatedY, radius, 0, Math.PI * 2);
+      context.arc(dot.x, dot.y, glowRadius, 0, Math.PI * 2);
 
-      context.fillStyle = `rgba(${red}, ${green}, ${blue}, ${opacity})`;
+      context.fillStyle = gradient;
+      context.fill();
+    }
+
+    /*
+     * Draw the dots on top of the lines and glows.
+     */
+    for (const dot of renderedDots) {
+      context.beginPath();
+
+      context.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+
+      context.fillStyle = `rgba(${dot.red}, ${dot.green}, ${dot.blue}, ${dot.opacity})`;
 
       context.fill();
     }
 
-    animationRef.current = requestAnimationFrame(draw);
+    animationRef.current = window.requestAnimationFrame(draw);
   }, [
     baseRgb,
     glowRgb,
     dotSize,
-    glowIntensity,
+    gap,
     proximity,
+    glowIntensity,
     waveSpeed,
+    driftAmount,
     driftSpeed,
+    scrollParallax,
+    twinkleChance,
+    twinkleAmount,
+    twinkleSpeed,
+    showConnections,
+    connectionRadius,
+    connectionOpacity,
   ]);
 
   useEffect(() => {
-    buildGrid();
+    buildCanvas();
 
     const container = containerRef.current;
 
@@ -274,21 +515,21 @@ function Background({
       return;
     }
 
-    const resizeObserver = new ResizeObserver(buildGrid);
+    const resizeObserver = new ResizeObserver(buildCanvas);
 
     resizeObserver.observe(container);
 
     return () => {
       resizeObserver.disconnect();
     };
-  }, [buildGrid]);
+  }, [buildCanvas]);
 
   useEffect(() => {
-    animationRef.current = requestAnimationFrame(draw);
+    animationRef.current = window.requestAnimationFrame(draw);
 
     return () => {
       if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
+        window.cancelAnimationFrame(animationRef.current);
       }
     };
   }, [draw]);
@@ -327,6 +568,22 @@ function Background({
     };
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      scrollRef.current = window.scrollY;
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <div
       ref={containerRef}
@@ -335,17 +592,32 @@ function Background({
         pointer-events-none
         fixed inset-0 z-0
         overflow-hidden
-        bg-[#0b0b0f]
+        bg-background
         ${className}
       `}
     >
       <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
+      {/* Soft edge shading */}
       <div
-        className="pointer-events-none absolute inset-0"
+        aria-hidden="true"
+        className="
+          pointer-events-none
+          absolute inset-0
+        "
         style={{
-          background:
-            "radial-gradient(ellipse at center, transparent 0%, transparent 40%, rgba(10, 10, 10, 0.6) 100%)",
+          background: `
+            radial-gradient(
+              ellipse at center,
+              transparent 0%,
+              transparent 52%,
+              color-mix(
+                in srgb,
+                var(--theme-background) 72%,
+                transparent
+              ) 100%
+            )
+          `,
         }}
       />
 

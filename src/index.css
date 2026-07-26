@@ -27,6 +27,8 @@
   --color-shadow: var(--theme-shadow);
   --color-divider: var(--theme-divider);
   --color-edge: var(--theme-edge);
+
+  --color-background: var(--theme-background);
 }
 
 /* Default warm theme */
@@ -51,6 +53,7 @@
   --theme-edge: #70412d;
 
   color-scheme: light;
+  --theme-background: #1f1916;
 }
 
 /* Dark palette for later */
@@ -73,6 +76,8 @@ html.dark {
   --theme-divider: #896348;
 
   --theme-edge: #5a3827;
+
+  --theme-background: #0e0b0a;
 
   color-scheme: dark;
 }
