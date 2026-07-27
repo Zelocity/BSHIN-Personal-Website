@@ -38,9 +38,9 @@ function HomePage() {
           <SectionFadeManager />
           <Hero />
           <About />
-          <Skills />
           <Education />
           <Experience />
+          <Skills />
           <Projects />
           <Contact />
         </main>

@@ -25,12 +25,7 @@ const education: EducationItem[] = [
       "Participating in a studio-based curriculum centered on collaborative software development.",
       "Preparing for a team capstone involving the design and delivery of a production-level software system.",
     ],
-    coursework: [
-      "Data Structures",
-      "Algorithms",
-      "Software Architecture",
-      "Software Testing",
-    ],
+    coursework: ["Software Engineering"],
   },
   {
     school: "University of California, Riverside",
@@ -46,10 +41,15 @@ const education: EducationItem[] = [
     ],
     coursework: [
       "Data Structures",
-      "Algorithms",
       "Databases",
+      "Data Analysis",
+      "AI",
+      "NLP",
+      "Machine Learning",
       "Operating Systems",
-      "Computer Vision",
+      "Cyber Security",
+      "Embedded Systems",
+      "Software Engineering",
     ],
   },
 ];
