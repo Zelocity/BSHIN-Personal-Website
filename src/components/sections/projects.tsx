@@ -33,12 +33,25 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
 
   const [showProjectDetails, setShowProjectDetails] = useState(false);
 
+  /*
+   * After the opening animation finishes, the old
+   * project list becomes invisible. It still keeps its
+   * layout space, but it cannot appear during resizing.
+   */
+  const [hideProjectList, setHideProjectList] = useState(false);
+
   const sectionRef = useRef<HTMLElement | null>(null);
+
+  const openTimeoutRef = useRef<number | null>(null);
 
   const closeTimeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     return () => {
+      if (openTimeoutRef.current !== null) {
+        window.clearTimeout(openTimeoutRef.current);
+      }
+
       if (closeTimeoutRef.current !== null) {
         window.clearTimeout(closeTimeoutRef.current);
       }
@@ -97,12 +110,23 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
   };
 
   const handleOpenProject = (project: Project) => {
+    if (openTimeoutRef.current !== null) {
+      window.clearTimeout(openTimeoutRef.current);
+
+      openTimeoutRef.current = null;
+    }
+
     if (closeTimeoutRef.current !== null) {
       window.clearTimeout(closeTimeoutRef.current);
 
       closeTimeoutRef.current = null;
     }
 
+    /*
+     * The list must be visible while it performs
+     * the outgoing swipe animation.
+     */
+    setHideProjectList(false);
     setDisplayedProject(project);
     setExpandedProjectId(null);
 
@@ -116,20 +140,45 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
         left: 0,
         behavior: "auto",
       });
+
+      /*
+       * Hide the old screen after the swipe finishes.
+       * This prevents it from appearing when the
+       * browser window is resized.
+       */
+      openTimeoutRef.current = window.setTimeout(() => {
+        setHideProjectList(true);
+        openTimeoutRef.current = null;
+      }, slideDuration);
     });
   };
 
   const handleCloseProject = () => {
+    if (openTimeoutRef.current !== null) {
+      window.clearTimeout(openTimeoutRef.current);
+
+      openTimeoutRef.current = null;
+    }
+
     if (closeTimeoutRef.current !== null) {
       window.clearTimeout(closeTimeoutRef.current);
 
       closeTimeoutRef.current = null;
     }
 
+    /*
+     * Make the list visible before the track
+     * begins swiping back toward it.
+     */
+    setHideProjectList(false);
     setShowProjectDetails(false);
 
     onCaseStudyChange?.(false);
 
+    /*
+     * Keep the project details mounted until the
+     * closing swipe animation has completed.
+     */
     closeTimeoutRef.current = window.setTimeout(() => {
       setDisplayedProject(null);
       closeTimeoutRef.current = null;
@@ -149,35 +198,46 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
           : undefined
       }
       className="
-        scroll-mt-16 overflow-hidden
-        px-6 py-10
+        isolate scroll-mt-16
+        overflow-hidden px-6 py-10
       "
     >
       {/* Two-screen sliding track */}
       <div
-        className={`
+        style={{
+          transform: showProjectDetails
+            ? "translate3d(-50%, 0, 0)"
+            : "translate3d(0, 0, 0)",
+        }}
+        className="
           flex w-[200%] items-start
-          transform-gpu will-change-transform
+          will-change-transform
           transition-transform duration-700
           ease-[cubic-bezier(0.22,1,0.36,1)]
+          [backface-visibility:hidden]
           motion-reduce:transition-none
-          ${showProjectDetails ? "-translate-x-1/2" : "translate-x-0"}
-        `}
+        "
       >
         {/* Project list screen */}
         <div
           aria-hidden={showProjectDetails}
           className={`
-            relative w-1/2 min-w-0 shrink-0
-            overflow-hidden [contain:paint]
+            relative z-0
+            w-1/2 min-w-0 shrink-0
+            overflow-clip
+            [contain:paint]
             ${showProjectDetails ? "pointer-events-none" : ""}
+            ${hideProjectList ? "invisible" : "visible"}
           `}
         >
           <div className="mx-auto max-w-7xl">
-            {/* Heading */}
+            {/* Section heading */}
             <div className="grid grid-cols-12 gap-8">
               <PixelPanel
-                className="col-span-12 lg:col-start-3 lg:col-span-8"
+                className="
+                  col-span-12
+                  lg:col-start-3 lg:col-span-8
+                "
                 contentClassName="p-5 sm:p-6"
               >
                 <header>
@@ -255,6 +315,7 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
 
                   <div className="mt-5 border-t-2 border-dashed border-divider/50" />
 
+                  {/* Category filters */}
                   {projectsView === "all" && (
                     <div className="mt-5">
                       <div className="flex flex-wrap gap-3">
@@ -307,7 +368,8 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
                 <div className="mt-7 grid grid-cols-12 gap-8">
                   <div
                     className={`
-                      col-span-12 grid items-stretch gap-5
+                      col-span-12 grid
+                      items-stretch gap-5
                       lg:col-start-3 lg:col-span-8
                       ${featuredGridClasses}
                     `}
@@ -340,13 +402,17 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
                     className="
                       border-2 border-frame
                       bg-accent px-5 py-2.5
-                      text-sm font-bold text-accent-text
+                      text-sm font-bold
+                      text-accent-text
                       shadow-[4px_4px_0_var(--theme-shadow)]
                       transition duration-150
                       hover:-translate-x-0.5
                       hover:-translate-y-0.5
                       hover:bg-accent-hover
                       hover:shadow-[6px_6px_0_var(--theme-shadow)]
+                      focus-visible:outline-none
+                      focus-visible:ring-4
+                      focus-visible:ring-accent/40
                       active:translate-x-1
                       active:translate-y-1
                       active:shadow-none
@@ -362,7 +428,12 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
             {projectsView === "all" && (
               <>
                 <div className="mt-7 grid grid-cols-12 gap-8">
-                  <div className="col-span-12 space-y-4 lg:col-start-3 lg:col-span-8">
+                  <div
+                    className="
+                      col-span-12 space-y-4
+                      lg:col-start-3 lg:col-span-8
+                    "
+                  >
                     {filteredProjects.map((project) => (
                       <ProjectArchiveRow
                         key={project.id}
@@ -389,7 +460,8 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
                     onClick={() => handleViewChange("featured")}
                     className="
                       border-2 border-frame
-                      bg-panel-secondary px-5 py-2.5
+                      bg-panel-secondary
+                      px-5 py-2.5
                       text-sm font-bold text-ink
                       shadow-[4px_4px_0_var(--theme-shadow)]
                       transition duration-150
@@ -397,6 +469,10 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
                       hover:-translate-y-0.5
                       hover:bg-panel-highlight
                       hover:text-accent
+                      hover:shadow-[6px_6px_0_var(--theme-shadow)]
+                      focus-visible:outline-none
+                      focus-visible:ring-4
+                      focus-visible:ring-accent/40
                       active:translate-x-1
                       active:translate-y-1
                       active:shadow-none
@@ -414,8 +490,10 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
         <div
           aria-hidden={!showProjectDetails}
           className={`
-            relative w-1/2 min-w-0 shrink-0
-            overflow-hidden [contain:paint]
+            relative z-10
+            w-1/2 min-w-0 shrink-0
+            overflow-clip
+            [contain:paint]
             ${showProjectDetails ? "" : "pointer-events-none"}
           `}
         >
