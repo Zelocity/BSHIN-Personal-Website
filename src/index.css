@@ -48,6 +48,8 @@
 
   --theme-frame: #3f291f;
   --theme-shadow: #8b5a36;
+
+  --theme-panel-shadow: transparent;
   --theme-divider: #754b35;
 
   --theme-edge: #70412d;

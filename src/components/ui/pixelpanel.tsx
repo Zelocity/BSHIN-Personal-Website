@@ -82,16 +82,14 @@ function PixelPanel({
       {/* Deep shadow */}
       {hasShadow && (
         <div
-          aria-hidden="true"
+          aria-hidden
           style={deepShadowStyle}
           className="
-            pointer-events-none
-            absolute inset-0 z-0
-            bg-shadow
+            pointer-events-none absolute inset-0 z-0
+            bg-[var(--theme-panel-shadow)]
           "
         />
       )}
-
       {/* Middle 3D edge */}
       {hasShadow && (
         <div

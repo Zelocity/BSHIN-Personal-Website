@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 
+import { FaHome } from "react-icons/fa";
+
 import ThemeToggle from "../ui/themetoggle";
 
 type NavigationLink = {
@@ -13,7 +15,6 @@ type HeaderProps = {
 };
 
 const navigationLinks: NavigationLink[] = [
-  { label: "Home", href: "#home" },
   { label: "About", href: "#about" },
   { label: "Education", href: "#education" },
   { label: "Experience", href: "#experience" },
@@ -22,45 +23,36 @@ const navigationLinks: NavigationLink[] = [
   { label: "Contact", href: "#contact" },
 ];
 
+const sectionHrefs = ["#home", ...navigationLinks.map((link) => link.href)];
+
 function Header({
   forcedActiveHref = null,
   caseStudyOpen = false,
 }: HeaderProps) {
   const [activeHref, setActiveHref] = useState("#home");
-
   const [menuOpen, setMenuOpen] = useState(false);
 
   const pendingHrefRef = useRef<string | null>(null);
-
   const pendingTimeoutRef = useRef<number | null>(null);
 
-  const displayedActiveHref = forcedActiveHref ?? activeHref;
-
+  /*
+   * When a case study is open, only Projects appears
+   * in the normal navigation.
+   */
   const visibleNavigationLinks = caseStudyOpen
     ? navigationLinks.filter((link) => link.href === "#projects")
     : navigationLinks;
 
   /*
-   * Close the mobile menu when entering
-   * project case-study mode.
+   * forcedActiveHref is used while viewing a project
+   * case study. Otherwise use the section detected
+   * from scrolling.
    */
-  useEffect(() => {
-    if (caseStudyOpen) {
-      setMenuOpen(false);
-    }
-  }, [caseStudyOpen]);
+  const displayedActiveHref = forcedActiveHref ?? activeHref;
 
   useEffect(() => {
-    /*
-     * While a case study is open, the active link is
-     * controlled through forcedActiveHref.
-     */
-    if (forcedActiveHref) {
-      return;
-    }
-
-    const sections = navigationLinks
-      .map((link) => document.getElementById(link.href.slice(1)))
+    const sections = sectionHrefs
+      .map((href) => document.getElementById(href.slice(1)))
       .filter((section): section is HTMLElement => section !== null);
 
     if (sections.length === 0) {
@@ -90,6 +82,14 @@ function Header({
     };
 
     const updateActiveSection = () => {
+      /*
+       * Don't change the scroll-detected active
+       * section while a forced section is being used.
+       */
+      if (forcedActiveHref) {
+        return;
+      }
+
       const pendingHref = pendingHrefRef.current;
 
       /*
@@ -118,17 +118,24 @@ function Header({
       }
 
       /*
-       * Contact is the final homepage section.
+       * Contact is the final section.
        */
       if (getDistanceFromBottom() <= 32) {
-        setActiveHref("#contact");
-        return;
+        const contactSection = document.getElementById("contact");
+
+        if (contactSection) {
+          setActiveHref("#contact");
+          return;
+        }
       }
 
+      /*
+       * Use a point about 40% down the screen to
+       * decide which section the user is viewing.
+       */
       const focusPoint = window.innerHeight * 0.4;
 
       let closestSection = sections[0];
-
       let smallestDistance = Number.POSITIVE_INFINITY;
 
       sections.forEach((section) => {
@@ -184,8 +191,6 @@ function Header({
 
       if (pendingTimeoutRef.current !== null) {
         window.clearTimeout(pendingTimeoutRef.current);
-
-        pendingTimeoutRef.current = null;
       }
     };
   }, [forcedActiveHref]);
@@ -228,7 +233,8 @@ function Header({
     <header
       className="
         fixed inset-x-0 top-0 z-50
-        h-16 border-b-4 border-frame
+        h-16
+        border-b-4 border-frame
         bg-panel text-ink
         shadow-[0_4px_0_var(--theme-shadow)]
       "
@@ -246,47 +252,58 @@ function Header({
             lg:col-start-3 lg:col-span-8
           "
         >
-          {/* Brandon logo */}
+          {/* HOME BUTTON */}
           <a
             href="#home"
             onClick={(event) => handleNavigation(event, "#home")}
+            aria-label="Home"
+            title="Home"
             className="
-              group flex shrink-0 items-center gap-2
-              font-bold text-ink
+              group flex h-9 w-9 shrink-0
+              items-center justify-center
+              border-2 border-frame
+              bg-accent
+              text-accent-text
+              shadow-[3px_3px_0_var(--theme-shadow)]
+              transition duration-150
+
+              hover:-translate-x-0.5
+              hover:-translate-y-0.5
+              hover:bg-accent-hover
+              hover:shadow-[4px_4px_0_var(--theme-shadow)]
+
               focus-visible:outline-none
               focus-visible:ring-4
               focus-visible:ring-accent/40
+
+              active:translate-x-0.5
+              active:translate-y-0.5
+              active:shadow-none
             "
           >
-            <span
-              aria-hidden="true"
-              className="
-                flex h-8 w-8 items-center justify-center
-                border-2 border-frame
-                bg-accent
-                text-sm font-bold text-accent-text
-                shadow-[3px_3px_0_var(--theme-shadow)]
-                transition duration-150
-                group-hover:-translate-x-0.5
-                group-hover:-translate-y-0.5
-              "
-            >
-              B
-            </span>
+            <FaHome aria-hidden="true" className="h-4 w-4" />
           </a>
 
-          {/* Centered desktop navigation */}
+          {/* DESKTOP NAVIGATION */}
           <nav
             aria-label="Page sections"
             className="
               absolute left-1/2 top-1/2
               hidden
-              -translate-x-1/2 -translate-y-1/2
+              -translate-x-1/2
+              -translate-y-1/2
               xl:block
             "
           >
             <ul className="flex items-center gap-1">
               {visibleNavigationLinks.map((link) => {
+                /*
+                 * When activeHref is "#home",
+                 * none of these links match.
+                 *
+                 * This means nothing is highlighted
+                 * while viewing the Hero section.
+                 */
                 const isActive = displayedActiveHref === link.href;
 
                 return (
@@ -298,15 +315,19 @@ function Header({
                       className={`
                           inline-flex items-center
                           whitespace-nowrap
-                          border-2 px-2.5 py-1.5
+                          border-2
+                          px-2.5 py-1.5
                           text-[11px] font-bold
                           uppercase tracking-wide
                           transition duration-150
+
                           hover:-translate-x-0.5
                           hover:-translate-y-0.5
+
                           focus-visible:outline-none
                           focus-visible:ring-4
                           focus-visible:ring-accent/40
+
                           ${
                             isActive
                               ? `
@@ -318,6 +339,7 @@ function Header({
                               : `
                                 border-transparent
                                 text-muted
+
                                 hover:border-frame
                                 hover:bg-panel-secondary
                                 hover:text-accent
@@ -334,11 +356,11 @@ function Header({
             </ul>
           </nav>
 
-          {/* Right-side controls */}
+          {/* RIGHT CONTROLS */}
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
 
-            {/* Mobile menu button */}
+            {/* MOBILE MENU BUTTON */}
             {!caseStudyOpen && (
               <button
                 type="button"
@@ -354,16 +376,20 @@ function Header({
                   text-lg font-bold text-ink
                   shadow-[3px_3px_0_var(--theme-shadow)]
                   transition duration-150
+
                   hover:-translate-x-0.5
                   hover:-translate-y-0.5
                   hover:bg-panel-highlight
                   hover:text-accent
+
                   focus-visible:outline-none
                   focus-visible:ring-4
                   focus-visible:ring-accent/40
+
                   active:translate-x-0.5
                   active:translate-y-0.5
                   active:shadow-none
+
                   xl:hidden
                 "
               >
@@ -372,7 +398,7 @@ function Header({
             )}
           </div>
 
-          {/* Mobile navigation */}
+          {/* MOBILE NAVIGATION */}
           {menuOpen && !caseStudyOpen && (
             <nav
               id="mobile-navigation"
@@ -388,7 +414,7 @@ function Header({
               "
             >
               <ul className="space-y-2">
-                {visibleNavigationLinks.map((link) => {
+                {navigationLinks.map((link) => {
                   const isActive = displayedActiveHref === link.href;
 
                   return (
@@ -398,34 +424,40 @@ function Header({
                         onClick={(event) => handleNavigation(event, link.href)}
                         aria-current={isActive ? "location" : undefined}
                         className={`
-                            flex w-full items-center
-                            justify-between
-                            border-2 border-frame
-                            px-3 py-2
-                            text-xs font-bold
-                            uppercase tracking-wide
-                            transition duration-150
-                            ${
-                              isActive
-                                ? "bg-accent text-accent-text"
-                                : `
-                                  bg-panel-secondary
-                                  text-ink
-                                  hover:bg-panel-highlight
-                                  hover:text-accent
-                                `
-                            }
-                          `}
+                          flex w-full items-center
+                          justify-between
+                          border-2 border-frame
+                          px-3 py-2
+                          text-xs font-bold
+                          uppercase tracking-wide
+                          transition duration-150
+
+                          ${
+                            isActive
+                              ? `
+                                bg-accent
+                                text-accent-text
+                              `
+                              : `
+                                bg-panel-secondary
+                                text-ink
+
+                                hover:bg-panel-highlight
+                                hover:text-accent
+                              `
+                          }
+                        `}
                       >
                         <span>{link.label}</span>
 
                         <span
                           aria-hidden="true"
                           className={`
-                              h-2.5 w-2.5
-                              border border-frame
-                              ${isActive ? "bg-accent-text" : "bg-panel"}
-                            `}
+                            h-2.5 w-2.5
+                            border border-frame
+
+                            ${isActive ? "bg-accent-text" : "bg-panel"}
+                          `}
                         />
                       </a>
                     </li>
