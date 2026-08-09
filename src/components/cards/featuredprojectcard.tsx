@@ -28,7 +28,7 @@ function FeaturedProjectCard({
         {/* Project image */}
         <div
           className="
-            relative overflow-hidden
+            relative shrink-0 overflow-hidden
             border-2 border-frame
             bg-panel
             shadow-[3px_3px_0_var(--theme-shadow)]
@@ -51,7 +51,7 @@ function FeaturedProjectCard({
         </div>
 
         {/* Category and date */}
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="mt-4 flex min-h-6 flex-wrap items-center justify-between gap-2">
           <span
             className="
               border border-frame
@@ -63,41 +63,63 @@ function FeaturedProjectCard({
             {project.category}
           </span>
 
-          <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">
+          <span
+            className="
+              text-[10px] font-bold uppercase
+              tracking-[0.14em] text-accent
+            "
+          >
             {project.date}
           </span>
         </div>
 
-        <h3 className="mt-3 text-lg font-bold leading-6 text-ink transition-colors duration-200 group-hover:text-accent">
+        {/* Project title */}
+        <h3
+          className="
+            mt-3 min-h-[3rem]
+            text-lg font-bold leading-6
+            text-ink
+            transition-colors duration-200
+            group-hover:text-accent
+          "
+        >
           {project.title}
         </h3>
 
-        <p className="mt-2 text-sm leading-6 text-muted">
+        {/* Short description */}
+        <p
+          className="
+            mt-2 min-h-[4.5rem]
+            line-clamp-3
+            text-sm leading-6 text-muted
+          "
+        >
           {project.shortDescription}
         </p>
 
-        {/* Description */}
-        <div className="mt-4 border-t border-dashed border-divider/50 pt-4">
-          <h4 className="text-xs font-bold uppercase tracking-[0.14em] text-accent">
-            About this project
-          </h4>
-
-          <p className="mt-2 text-sm leading-6 text-muted">
-            {project.description}
-          </p>
-        </div>
-
         {/* Technologies and actions */}
         <div className="mt-auto pt-5">
-          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.14em] text-muted">
+          <p
+            className="
+              mb-2 text-[10px] font-bold
+              uppercase tracking-[0.14em]
+              text-muted
+            "
+          >
             Technologies
           </p>
 
-          <TechnologyTags technologies={project.technologies} limit={4} />
+          {/* Consistent space for technology tags */}
+          <div className="min-h-[3.75rem]">
+            <TechnologyTags technologies={project.technologies} limit={4} />
+          </div>
 
+          {/* Consistent space for one or two button rows */}
           <div
             className="
-              mt-4 flex flex-wrap items-center gap-2
+              mt-4 flex min-h-[5.25rem]
+              flex-wrap content-start
+              items-start gap-2
               border-t border-dashed
               border-divider/50 pt-4
             "
@@ -115,6 +137,9 @@ function FeaturedProjectCard({
                 hover:-translate-y-0.5
                 hover:bg-accent-hover
                 hover:shadow-[3px_3px_0_var(--theme-shadow)]
+                focus-visible:outline-none
+                focus-visible:ring-4
+                focus-visible:ring-accent/40
                 active:translate-x-0.5
                 active:translate-y-0.5
                 active:shadow-none

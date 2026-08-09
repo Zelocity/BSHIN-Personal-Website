@@ -16,7 +16,7 @@ function About() {
             {/* Profile image */}
             <div className="mx-auto w-44 md:mx-0 md:w-full">
               <img
-                src="/images/profile.jpg"
+                src="/images/profile.png"
                 alt="Brandon Shin"
                 className="
                   aspect-square w-full object-cover

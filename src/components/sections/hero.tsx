@@ -9,23 +9,34 @@ function Hero() {
       className="
         flex min-h-[calc(100vh-4rem)]
         scroll-mt-16 items-center
-        px-6 py-14
+        px-4 py-12
+        sm:px-6 sm:py-14
       "
     >
       <div className="mx-auto w-full max-w-7xl">
         <div className="grid grid-cols-12 gap-8">
           <PixelPanel
-            className="col-span-12 lg:col-start-3 lg:col-span-8"
-            contentClassName="p-6 sm:p-8 lg:p-10"
+            className="
+              col-span-12
+              lg:col-start-3 lg:col-span-8
+            "
+            contentClassName="
+              p-6
+              sm:p-8
+              lg:p-10
+            "
           >
             <div
               className="
-                grid items-center gap-8
-                md:grid-cols-[minmax(0,1fr)_14rem]
+                grid gap-10
+                md:grid-cols-[minmax(0,1fr)_17rem]
+                md:items-center
+                lg:gap-12
               "
             >
-              {/* Main introduction */}
-              <div>
+              {/* LEFT SIDE */}
+              <div className="min-w-0">
+                {/* Top labels */}
                 <div className="flex flex-wrap items-center gap-3">
                   <span
                     className="
@@ -61,9 +72,11 @@ function Hero() {
                   </span>
                 </div>
 
+                {/* Intro */}
                 <p
                   className="
-                    mt-7 text-xs font-bold uppercase
+                    mt-7
+                    text-xs font-bold uppercase
                     tracking-[0.3em] text-muted
                     sm:text-sm
                   "
@@ -73,19 +86,24 @@ function Hero() {
 
                 <h1
                   className="
-                    mt-2 text-4xl font-bold
-                    uppercase leading-none text-ink
-                    sm:text-5xl lg:text-6xl
+                    mt-3
+                    text-4xl font-bold uppercase
+                    leading-none text-ink
+                    sm:text-5xl
+                    lg:text-6xl
                   "
                 >
                   Brandon Shin
                 </h1>
 
-                <div className="my-5 border-t-2 border-dashed border-divider/50" />
+                <div className="my-6 border-t-2 border-dashed border-divider/50" />
 
+                {/* Typewriter */}
                 <p
                   className="
-                    max-w-2xl text-lg font-bold
+                    min-h-[2rem]
+                    max-w-2xl
+                    text-lg font-bold
                     leading-7 text-ink
                     sm:text-xl sm:leading-8
                   "
@@ -108,7 +126,7 @@ function Hero() {
 
                 <p
                   className="
-                    mt-4 max-w-2xl
+                    mt-4 max-w-xl
                     text-sm leading-6 text-muted
                     sm:text-base sm:leading-7
                   "
@@ -117,25 +135,28 @@ function Hero() {
                   creating content, and continuously learning new technologies.
                 </p>
 
-                {/* Main actions */}
-                <div className="mt-7 flex flex-wrap gap-4">
+                {/* Main buttons */}
+                <div className="mt-7 flex flex-wrap gap-3">
                   <a
                     href="#projects"
                     className="
-                      inline-flex items-center justify-center
+                      inline-flex h-12 items-center justify-center
                       border-2 border-frame
-                      bg-accent px-5 py-3
+                      bg-accent px-5
                       text-sm font-bold uppercase
                       tracking-wide text-accent-text
                       shadow-[4px_4px_0_var(--theme-shadow)]
                       transition duration-150
+
                       hover:-translate-x-0.5
                       hover:-translate-y-0.5
                       hover:bg-accent-hover
                       hover:shadow-[6px_6px_0_var(--theme-shadow)]
+
                       focus-visible:outline-none
                       focus-visible:ring-4
                       focus-visible:ring-accent/40
+
                       active:translate-x-1
                       active:translate-y-1
                       active:shadow-none
@@ -147,21 +168,24 @@ function Hero() {
                   <a
                     href="#about"
                     className="
-                      inline-flex items-center justify-center
+                      inline-flex h-12 items-center justify-center
                       border-2 border-frame
-                      bg-panel-secondary px-5 py-3
+                      bg-panel-secondary px-5
                       text-sm font-bold uppercase
                       tracking-wide text-ink
                       shadow-[4px_4px_0_var(--theme-shadow)]
                       transition duration-150
+
                       hover:-translate-x-0.5
                       hover:-translate-y-0.5
                       hover:bg-panel-highlight
                       hover:text-accent
                       hover:shadow-[6px_6px_0_var(--theme-shadow)]
+
                       focus-visible:outline-none
                       focus-visible:ring-4
                       focus-visible:ring-accent/40
+
                       active:translate-x-1
                       active:translate-y-1
                       active:shadow-none
@@ -174,16 +198,18 @@ function Hero() {
                 {/* Current status */}
                 <div
                   className="
-                    mt-7 flex w-fit items-center gap-3
+                    mt-7
+                    flex w-fit items-center gap-3
                     border-2 border-frame
-                    bg-panel-secondary px-3 py-2
+                    bg-panel-secondary
+                    px-4 py-2.5
                     shadow-[2px_2px_0_var(--theme-shadow)]
                   "
                 >
                   <span
                     aria-hidden="true"
                     className="
-                      h-3 w-3
+                      h-3 w-3 shrink-0
                       border border-frame
                       bg-accent
                     "
@@ -195,35 +221,39 @@ function Hero() {
                 </div>
               </div>
 
-              {/* Player card and social links */}
-              <div className="mx-auto w-full max-w-[14rem]">
+              {/* RIGHT SIDE */}
+              <aside className="mx-auto w-full max-w-[17rem]">
                 <div
                   className="
                     border-2 border-frame
-                    bg-panel-secondary p-4
+                    bg-panel-secondary
+                    p-4
                     shadow-[5px_5px_0_var(--theme-shadow)]
                   "
                 >
-                  <div className="w-full text-center">
-                    <div
+                  {/* Profile image */}
+                  <div
+                    className="
+                      aspect-square w-full overflow-hidden
+                      border-4 border-frame
+                      bg-panel
+                      shadow-[4px_4px_0_var(--theme-shadow)]
+                    "
+                  >
+                    <img
+                      src="/images/profile.png"
+                      alt="Brandon Shin"
                       className="
-                        mx-auto aspect-square w-full
-                        overflow-hidden
-                        border-4 border-frame
-                        bg-panel-secondary
-                        shadow-[4px_4px_0_var(--theme-shadow)]
+                        h-full w-full
+                        object-cover object-center
                       "
-                    >
-                      <img
-                        src="/images/profile.jpg"
-                        alt="Brandon Shin"
-                        className="h-full w-full object-cover object-center"
-                      />
-                    </div>
+                    />
+                  </div>
 
+                  {/* Player title */}
+                  <div className="mt-5 text-center">
                     <p
                       className="
-                        mt-5 w-full text-center
                         text-xs font-bold uppercase
                         tracking-[0.2em] text-muted
                       "
@@ -232,10 +262,12 @@ function Hero() {
                     </p>
                   </div>
 
-                  <div className="mt-4 border-t-2 border-dashed border-divider/50" />
+                  {/* Divider */}
+                  <div className="my-4 border-t-2 border-dashed border-divider/50" />
 
-                  <dl className="mt-4 space-y-3">
-                    <div className="flex items-center justify-between gap-3">
+                  {/* Player stats */}
+                  <dl className="space-y-3">
+                    <div className="flex items-center justify-between gap-4">
                       <dt
                         className="
                           text-[10px] font-bold uppercase
@@ -248,7 +280,7 @@ function Hero() {
                       <dd className="text-xs font-bold text-ink">Software</dd>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between gap-4">
                       <dt
                         className="
                           text-[10px] font-bold uppercase
@@ -261,7 +293,7 @@ function Hero() {
                       <dd className="text-xs font-bold text-ink">California</dd>
                     </div>
 
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center justify-between gap-4">
                       <dt
                         className="
                           text-[10px] font-bold uppercase
@@ -276,60 +308,102 @@ function Hero() {
                       </dd>
                     </div>
                   </dl>
-                </div>
 
-                {/* Social links from sociallinks.ts */}
-                <div className="mt-4 flex items-center justify-center gap-2">
-                  {socialLinks.map((link) => {
-                    const Icon = link.icon;
+                  {/* Divider */}
+                  <div className="my-4 border-t-2 border-dashed border-divider/50" />
 
-                    return (
-                      <a
-                        key={link.label}
-                        href={link.href}
-                        target={link.external ? "_blank" : undefined}
-                        rel={link.external ? "noopener noreferrer" : undefined}
-                        aria-label={link.label}
-                        title={link.label}
-                        className="
-                          flex h-9 w-9 items-center justify-center
-                          border-2 border-frame
-                          bg-panel-secondary
-                          text-base text-accent
-                          shadow-[2px_2px_0_var(--theme-shadow)]
-                          transition duration-150
-                          hover:-translate-x-0.5
-                          hover:-translate-y-0.5
-                          hover:bg-accent
-                          hover:text-accent-text
-                          hover:shadow-[3px_3px_0_var(--theme-shadow)]
-                          focus-visible:outline-none
-                          focus-visible:ring-4
-                          focus-visible:ring-accent/40
-                          active:translate-x-0.5
-                          active:translate-y-0.5
-                          active:shadow-none
-                        "
-                      >
-                        <Icon aria-hidden="true" className="h-4 w-4" />
-                      </a>
-                    );
-                  })}
+                  {/* Connect label */}
+                  <p
+                    className="
+                      mb-3 text-center
+                      text-[10px] font-bold uppercase
+                      tracking-[0.2em] text-muted
+                    "
+                  >
+                    Connect
+                  </p>
+
+                  {/* Social links */}
+                  <div className="grid grid-cols-2 gap-2">
+                    {socialLinks.map((link) => {
+                      const Icon = link.icon;
+                      const isEmail = link.label.toLowerCase() === "email";
+                      const isResume = link.label.toLowerCase() === "resume";
+
+                      const isWide = isEmail || isResume;
+
+                      return (
+                        <a
+                          key={link.label}
+                          href={link.href}
+                          target={link.external ? "_blank" : undefined}
+                          rel={
+                            link.external ? "noopener noreferrer" : undefined
+                          }
+                          aria-label={link.label}
+                          title={link.label}
+                          className={`
+                            flex h-9 items-center justify-center
+                            gap-2
+                            border-2 border-frame
+                            bg-panel
+                            px-2
+                            text-[10px] font-bold
+                            text-accent
+                            shadow-[2px_2px_0_var(--theme-shadow)]
+                            transition duration-150
+
+                            hover:-translate-x-0.5
+                            hover:-translate-y-0.5
+                            hover:bg-accent
+                            hover:text-accent-text
+                            hover:shadow-[3px_3px_0_var(--theme-shadow)]
+
+                            focus-visible:outline-none
+                            focus-visible:ring-4
+                            focus-visible:ring-accent/40
+
+                            active:translate-x-0.5
+                            active:translate-y-0.5
+                            active:shadow-none
+
+                            ${isWide ? "col-span-2" : ""}
+                          `}
+                        >
+                          {Icon && (
+                            <Icon
+                              aria-hidden="true"
+                              className="h-4 w-4 shrink-0"
+                            />
+                          )}
+
+                          {isEmail ? (
+                            <span className="truncate">
+                              {link.displayText ?? link.label}
+                            </span>
+                          ) : (
+                            <span>{link.displayText ?? link.label}</span>
+                          )}
+                        </a>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              </aside>
             </div>
           </PixelPanel>
         </div>
 
-        {/* Start prompt */}
+        {/* Bottom prompt */}
         <div className="mt-8 flex justify-center">
           <a
             href="#about"
             aria-label="Scroll to the About section"
             className="
               group flex flex-col items-center gap-2
-              text-center text-[10px] font-bold
-              uppercase tracking-[0.25em] text-muted
+              text-center
+              text-[10px] font-bold uppercase
+              tracking-[0.25em] text-muted
               transition hover:text-accent
               sm:text-xs
             "
@@ -345,6 +419,7 @@ function Hero() {
                 text-base text-accent
                 shadow-[2px_2px_0_var(--theme-shadow)]
                 transition duration-150
+
                 group-hover:translate-y-1
                 group-hover:bg-panel-highlight
               "

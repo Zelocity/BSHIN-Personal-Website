@@ -1,12 +1,12 @@
 import type { IconType } from "react-icons";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { HiDocumentText } from "react-icons/hi2";
+import { FaFileAlt, FaGithub, FaLinkedin } from "react-icons/fa";
 
 export type SocialLink = {
   label: string;
   href: string;
-  icon: IconType;
+  icon?: IconType;
   external: boolean;
+  displayText?: string;
 };
 
 export const socialLinks: SocialLink[] = [
@@ -23,9 +23,16 @@ export const socialLinks: SocialLink[] = [
     external: true,
   },
   {
+    label: "Email",
+    href: "mailto:YOUR_EMAIL@gmail.com",
+    external: false,
+    displayText: "bmshin02@gmail.com",
+  },
+  {
     label: "Resume",
-    href: "/resume.pdf",
-    icon: HiDocumentText,
+    href: "/BrandonShinResume_2026.pdf",
+    icon: FaFileAlt,
     external: true,
+    displayText: "Resume",
   },
 ];

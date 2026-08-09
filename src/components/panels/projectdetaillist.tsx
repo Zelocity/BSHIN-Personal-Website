@@ -14,17 +14,28 @@ function ProjectDetailList({ title, items }: ProjectDetailListProps) {
     <PixelPanel
       variant="secondary"
       shadowSize={4}
-      className="h-full"
-      contentClassName="h-full p-5"
+      contentClassName="p-5 sm:p-6"
     >
-      <h3 className="text-lg font-bold text-ink">{title}</h3>
+      <h3 className="text-xl font-bold leading-tight text-ink">{title}</h3>
 
-      <ul className="mt-4 space-y-3">
-        {items.map((item) => (
-          <li key={item} className="flex gap-3 text-sm leading-6 text-muted">
+      <div className="mt-4 border-t-2 border-dashed border-divider/50" />
+
+      <ul className="mt-5 space-y-4">
+        {items.map((item, index) => (
+          <li
+            key={`${title}-${index}`}
+            className="
+              flex items-start gap-3
+              text-sm leading-7 text-muted
+              sm:text-base
+            "
+          >
             <span
               aria-hidden="true"
-              className="mt-2 h-2 w-2 shrink-0 bg-accent"
+              className="
+                mt-[0.65rem] h-2 w-2
+                shrink-0 bg-accent
+              "
             />
 
             <span>{item}</span>
