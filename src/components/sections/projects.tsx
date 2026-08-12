@@ -38,7 +38,6 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
    * project list becomes invisible. It still keeps its
    * layout space, but it cannot appear during resizing.
    */
-  const [hideProjectList, setHideProjectList] = useState(false);
 
   const sectionRef = useRef<HTMLElement | null>(null);
 
@@ -126,7 +125,7 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
      * The list must be visible while it performs
      * the outgoing swipe animation.
      */
-    setHideProjectList(false);
+
     setDisplayedProject(project);
     setExpandedProjectId(null);
 
@@ -147,7 +146,6 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
        * browser window is resized.
        */
       openTimeoutRef.current = window.setTimeout(() => {
-        setHideProjectList(true);
         openTimeoutRef.current = null;
       }, slideDuration);
     });
@@ -170,7 +168,7 @@ function Projects({ onCaseStudyChange }: ProjectsProps) {
      * Make the list visible before the track
      * begins swiping back toward it.
      */
-    setHideProjectList(false);
+
     setShowProjectDetails(false);
 
     onCaseStudyChange?.(false);
