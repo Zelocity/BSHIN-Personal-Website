@@ -24,7 +24,7 @@ export const socialLinks: SocialLink[] = [
   },
   {
     label: "Email",
-    href: "mailto:YOUR_EMAIL@gmail.com",
+    href: "mailto:bmshin02@gmail.com",
     external: false,
     displayText: "bmshin02@gmail.com",
   },
